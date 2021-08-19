@@ -40,7 +40,7 @@ end
 RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
-
+  config.include RequestSpecHelper, type: :request
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.
@@ -50,7 +50,7 @@ RSpec.configure do |config|
   # config.use_active_record = false
   
   config.include FactoryBot::Syntax::Methods
-  config.include RequestSpecHelper, type: :request
+  
   # start by truncating all the tables but then use the faster transaction strategy the rest of the time.
   config.before(:suite) do
     DatabaseCleaner.clean_with(:truncation)

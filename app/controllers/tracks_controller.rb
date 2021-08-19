@@ -1,5 +1,5 @@
-class TrackController < ApplicationController
-    before_action :set_todo, only: [:show, :update, :destroy]
+class TracksController < ApplicationController
+    before_action :set_track, only: [:show, :update, :destroy]
 
   # GET /tracks
   def index

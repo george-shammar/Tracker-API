@@ -1,16 +1,16 @@
 require 'rails_helper'
 
-RSpec.describe "Tracks API", type: :request do
+RSpec.describe "Track API", type: :request do
   # initialize test data
   let!(:tracks) { create_list(:track, 10) }
   let(:track_id) { tracks.first.id }
 
   # Test suite for GET /tracks
-  describe 'GET /tracks' do
+  describe 'GET /track' do
     # make HTTP get request before each example
     before { get '/tracks' }
 
-    it 'returns tracks' do
+    it 'returns track' do
       # Note `json` is a custom helper to parse JSON responses
       expect(json).not_to be_empty
       expect(json.size).to eq(10)
