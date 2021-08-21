@@ -81,7 +81,7 @@ RSpec.describe "Days", type: :request do
        end
  
        it 'returns a failure message' do
-         expect(response.body).to match(/Validation failed: blood_pressure can't be blank/)
+         expect(response.body).to match("{\"message\":\"Validation failed: Blood pressure can't be blank, Blood sugar can't be blank\"}")
        end
      end
    end
@@ -99,7 +99,7 @@ RSpec.describe "Days", type: :request do
  
        it 'updates the day' do
          updated_item = Day.find(id)
-         expect(updated_item.blood_pressure).to match(/92/)
+         expect(updated_item.blood_pressure).to match(92)
        end
      end
  
