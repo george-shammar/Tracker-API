@@ -1,14 +1,16 @@
 require 'rails_helper'
 
 RSpec.describe "Track API", type: :request do
-  # initialize test data
-  let!(:tracks) { create_list(:track, 10) }
+  let(:user) { create(:user) }
+  let!(:tracks) { create_list(:track, 10, patient: user.id) }
   let(:track_id) { tracks.first.id }
+  # authorize request
+  let(:headers) { valid_headers }
 
-  # Test suite for GET /tracks
   describe 'GET /track' do
+    # update request with headers
+    before { get '/tracks', params: {}, headers: headers }
     # make HTTP get request before each example
-    before { get '/tracks' }
 
     it 'returns track' do
       # Note `json` is a custom helper to parse JSON responses
@@ -23,7 +25,7 @@ RSpec.describe "Track API", type: :request do
 
   # Test suite for GET /tracks/:id
   describe 'GET /tracks/:id' do
-    before { get "/tracks/#{track_id}" }
+    before { get "/tracks/#{track_id}", params: {}, headers: headers }
 
     context 'when the record exists' do
       it 'returns the track' do
@@ -44,18 +46,20 @@ RSpec.describe "Track API", type: :request do
       end
 
       it 'returns a not found message' do
-        expect(response.body).to match(/Couldn't find Track/)
+        expect(response.body).to match("{\"message\":\"Couldn't find Track with 'id'=100\"}")
       end
     end
   end
 
   # Test suite for POST /tracks
   describe 'POST /tracks' do
-    # valid payload
-    let(:valid_attributes) { { title: 'Health Status', patient: '1' } }
+    let(:valid_attributes) do
+      # send json payload
+      { title: 'Health Status', patient: user.id.to_s }.to_json
+    end
 
     context 'when the request is valid' do
-      before { post '/tracks', params: valid_attributes }
+      before { post '/tracks', params: valid_attributes, headers: headers }
 
       it 'creates a track' do
         expect(json['title']).to eq('Health Status')
@@ -67,15 +71,16 @@ RSpec.describe "Track API", type: :request do
     end
 
     context 'when the request is invalid' do
-      before { post '/tracks', params: { title: 'Foobar' } }
+      let(:invalid_attributes) { { title: nil }.to_json }
+      before { post '/tracks', params: invalid_attributes, headers: headers }
 
       it 'returns status code 422' do
         expect(response).to have_http_status(422)
       end
 
       it 'returns a validation failure message' do
-        expect(response.body)
-          .to match(/Validation failed: Patient can't be blank/)
+        expect(json['message'])
+          .to match(/Validation failed: Title can't be blank/)
       end
     end
   end
@@ -85,7 +90,10 @@ RSpec.describe "Track API", type: :request do
     let(:valid_attributes) { { title: 'Shopping' } }
 
     context 'when the record exists' do
-      before { put "/tracks/#{track_id}", params: valid_attributes }
+      let(:valid_attributes) { { title: 'Shopping' }.to_json }
+
+      context 'when the record exists' do
+        before { put "/tracks/#{track_id}", params: valid_attributes, headers: headers }
 
       it 'updates the record' do
         expect(response.body).to be_empty
@@ -99,10 +107,11 @@ RSpec.describe "Track API", type: :request do
 
   # Test suite for DELETE /tracks/:id
   describe 'DELETE /tracks/:id' do
-    before { delete "/tracks/#{track_id}" }
+    before { delete "/tracks/#{track_id}", params: {}, headers: headers }
 
     it 'returns status code 204' do
       expect(response).to have_http_status(204)
     end
   end
+end
 end

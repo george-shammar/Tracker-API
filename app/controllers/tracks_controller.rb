@@ -3,13 +3,15 @@ class TracksController < ApplicationController
 
   # GET /tracks
   def index
-    @tracks = Track.all
+    # get current user tracks
+    @tracks = current_user.tracks
     json_response(@tracks)
   end
 
   # POST /tracks
   def create
-    @track = Track.create!(track_params)
+    # create tracks belonging to current user
+    @track = current_user.tracks.create!(track_params)
     json_response(@track, :created)
   end
 
@@ -33,8 +35,7 @@ class TracksController < ApplicationController
   private
 
   def track_params
-    # whitelist params
-    params.permit(:title, :patient)
+    params.permit(:title)
   end
 
   def set_track

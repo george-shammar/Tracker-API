@@ -1,15 +1,15 @@
 require 'rails_helper'
 
 RSpec.describe "Days", type: :request do
-   # Initialize the test data
-   let!(:track) { create(:track) }
-   let!(:days) { create_list(:day, 20, track_id: track.id) }
-   let(:track_id) { track.id }
-   let(:id) { days.first.id }
- 
-   # Test suite for GET /tracks/:track_id/days
-   describe 'GET /tracks/:track_id/days' do
-     before { get "/tracks/#{track_id}/days" }
+  let(:user) { create(:user) }
+  let!(:track) { create(:track, patient: user.id) }
+  let!(:days) { create_list(:day, 20, track_id: track.id) }
+  let(:track_id) { track.id }
+  let(:id) { days.first.id }
+  let(:headers) { valid_headers }
+
+  describe 'GET /tracks/:track_id/days' do
+    before { get "/tracks/#{track_id}/days", params: {}, headers: headers }
  
      context 'when track exists' do
        it 'returns status code 200' do
@@ -36,7 +36,7 @@ RSpec.describe "Days", type: :request do
  
    # Test suite for GET /tracks/:track_id/days/:id
    describe 'GET /tracks/:track_id/days/:id' do
-     before { get "/tracks/#{track_id}/days/#{id}" }
+    before { get "/tracks/#{track_id}/days/#{id}", params: {}, headers: headers }
  
      context 'when track day exists' do
        it 'returns status code 200' do
@@ -63,19 +63,21 @@ RSpec.describe "Days", type: :request do
  
    # Test suite for PUT /tracks/:track_id/days
    describe 'POST /tracks/:track_id/days' do
-     let(:valid_attributes) { { blood_pressure: 89, blood_sugar: 23 } }
- 
-     context 'when request attributes are valid' do
-       before { post "/tracks/#{track_id}/days", params: valid_attributes }
- 
+    let(:valid_attributes) { { blood_pressure: 89, blood_sugar: 23 }.to_json }
+
+    context 'when request attributes are valid' do
+      before do
+        post "/tracks/#{track_id}/days", params: valid_attributes, headers: headers
+      end
+
        it 'returns status code 201' do
          expect(response).to have_http_status(201)
        end
      end
  
      context 'when an invalid request' do
-       before { post "/tracks/#{track_id}/days", params: {} }
- 
+      before { post "/tracks/#{track_id}/days", params: {}, headers: headers }
+
        it 'returns status code 422' do
          expect(response).to have_http_status(422)
        end
@@ -88,10 +90,12 @@ RSpec.describe "Days", type: :request do
  
    # Test suite for PUT /tracks/:track_id/days/:id
    describe 'PUT /tracks/:track_id/days/:id' do
-     let(:valid_attributes) { { blood_pressure: 92 } }
- 
-     before { put "/tracks/#{track_id}/days/#{id}", params: valid_attributes }
- 
+     let(:valid_attributes) { { blood_pressure: 92 }.to_json }
+    
+     before do
+      put "/tracks/#{track_id}/days/#{id}", params: valid_attributes, headers: headers
+     end
+
      context 'when item exists' do
        it 'returns status code 204' do
          expect(response).to have_http_status(204)
@@ -118,7 +122,7 @@ RSpec.describe "Days", type: :request do
  
    # Test suite for DELETE /tracks/:id
    describe 'DELETE /tracks/:id' do
-     before { delete "/tracks/#{track_id}/days/#{id}" }
+    before { delete "/tracks/#{track_id}/days/#{id}", params: {}, headers: headers }
  
      it 'returns status code 204' do
        expect(response).to have_http_status(204)
