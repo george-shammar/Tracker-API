@@ -87,22 +87,22 @@ RSpec.describe "Track API", type: :request do
       context 'when the record exists' do
         before { put "/tracks/#{track_id}", params: valid_attributes, headers: headers }
 
-      it 'updates the record' do
-        expect(response.body).to be_empty
+        it 'updates the record' do
+          expect(response.body).to be_empty
+        end
+
+        it 'returns status code 204' do
+          expect(response).to have_http_status(204)
+        end
       end
+    end
+
+    describe 'DELETE /tracks/:id' do
+      before { delete "/tracks/#{track_id}", params: {}, headers: headers }
 
       it 'returns status code 204' do
         expect(response).to have_http_status(204)
       end
     end
   end
-  
-  describe 'DELETE /tracks/:id' do
-    before { delete "/tracks/#{track_id}", params: {}, headers: headers }
-
-    it 'returns status code 204' do
-      expect(response).to have_http_status(204)
-    end
-  end
-end
 end

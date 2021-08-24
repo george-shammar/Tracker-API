@@ -1,5 +1,5 @@
 class TracksController < ApplicationController
-    before_action :set_track, only: [:show, :update, :destroy]
+  before_action :set_track, only: [:show, :update, :destroy]
 
   def index
     @tracks = current_user.tracks
@@ -19,7 +19,7 @@ class TracksController < ApplicationController
     @track.update(track_params)
     head :no_content
   end
-  
+
   def destroy
     @track.destroy
     head :no_content
