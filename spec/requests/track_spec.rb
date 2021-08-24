@@ -4,16 +4,12 @@ RSpec.describe "Track API", type: :request do
   let(:user) { create(:user) }
   let!(:tracks) { create_list(:track, 10, patient: user.id) }
   let(:track_id) { tracks.first.id }
-  # authorize request
   let(:headers) { valid_headers }
 
   describe 'GET /track' do
-    # update request with headers
     before { get '/tracks', params: {}, headers: headers }
-    # make HTTP get request before each example
 
     it 'returns track' do
-      # Note `json` is a custom helper to parse JSON responses
       expect(json).not_to be_empty
       expect(json.size).to eq(10)
     end
@@ -23,7 +19,6 @@ RSpec.describe "Track API", type: :request do
     end
   end
 
-  # Test suite for GET /tracks/:id
   describe 'GET /tracks/:id' do
     before { get "/tracks/#{track_id}", params: {}, headers: headers }
 
@@ -51,10 +46,8 @@ RSpec.describe "Track API", type: :request do
     end
   end
 
-  # Test suite for POST /tracks
   describe 'POST /tracks' do
     let(:valid_attributes) do
-      # send json payload
       { title: 'Health Status', patient: user.id.to_s }.to_json
     end
 
@@ -85,7 +78,6 @@ RSpec.describe "Track API", type: :request do
     end
   end
 
-  # Test suite for PUT /tracks/:id
   describe 'PUT /tracks/:id' do
     let(:valid_attributes) { { title: 'Shopping' } }
 
@@ -104,8 +96,7 @@ RSpec.describe "Track API", type: :request do
       end
     end
   end
-
-  # Test suite for DELETE /tracks/:id
+  
   describe 'DELETE /tracks/:id' do
     before { delete "/tracks/#{track_id}", params: {}, headers: headers }
 

@@ -34,7 +34,6 @@ RSpec.describe "Days", type: :request do
      end
    end
  
-   # Test suite for GET /tracks/:track_id/days/:id
    describe 'GET /tracks/:track_id/days/:id' do
     before { get "/tracks/#{track_id}/days/#{id}", params: {}, headers: headers }
  
@@ -61,7 +60,6 @@ RSpec.describe "Days", type: :request do
      end
    end
  
-   # Test suite for PUT /tracks/:track_id/days
    describe 'POST /tracks/:track_id/days' do
     let(:valid_attributes) { { blood_pressure: 89, blood_sugar: 23 }.to_json }
 
@@ -88,7 +86,6 @@ RSpec.describe "Days", type: :request do
      end
    end
  
-   # Test suite for PUT /tracks/:track_id/days/:id
    describe 'PUT /tracks/:track_id/days/:id' do
      let(:valid_attributes) { { blood_pressure: 92 }.to_json }
     
@@ -120,7 +117,6 @@ RSpec.describe "Days", type: :request do
      end
    end
  
-   # Test suite for DELETE /tracks/:id
    describe 'DELETE /tracks/:id' do
     before { delete "/tracks/#{track_id}/days/#{id}", params: {}, headers: headers }
  
